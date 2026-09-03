@@ -64,14 +64,17 @@ async function bootstrap(): Promise<void> {
   // 3. App Ready Handler
   await app.whenReady();
 
+  // Configure session security boundaries before creating window
+  const partitionSession = session.fromPartition('persist:whatsapp-session');
+  SecurityManager.enforcePermissionHandlers(partitionSession);
+
   // Create Window
   const settings = settingsManager.getSettings();
   const startHidden = isStartHidden || settings.startHidden;
   const mainWindow = windowController.createWindow(startHidden);
 
-  // Apply Security Boundaries
-  const partitionSession = session.fromPartition('persist:whatsapp-session');
-  SecurityManager.apply(mainWindow, partitionSession);
+  // Apply Window Navigation Guards
+  SecurityManager.enforceNavigationGuards(mainWindow);
 
   // Attach Libadwaita Theme Engine
   themeManager.attach(mainWindow);

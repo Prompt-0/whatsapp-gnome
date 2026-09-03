@@ -3,7 +3,35 @@ import { URL } from 'node:url';
 
 const TRUSTED_ORIGIN = 'https://web.whatsapp.com';
 const SAFE_PROTOCOLS = new Set(['https:', 'http:']);
-const ALLOWED_PERMISSIONS = new Set(['media', 'notifications']);
+const ALLOWED_PERMISSIONS = new Set([
+  'media',
+  'notifications',
+  'durable-storage',
+  'persistent-storage',
+  'storage-access',
+  'clipboard-read',
+  'clipboard-sanitized-write',
+  'fullscreen',
+  'system-wake-lock',
+  'window-management',
+  'local-fonts',
+]);
+
+function isWhatsAppOrigin(originOrUrl: string): boolean {
+  try {
+    const url = new URL(originOrUrl);
+    const host = url.hostname;
+    return (
+      url.protocol === 'https:' &&
+      (host === 'web.whatsapp.com' ||
+        host.endsWith('.web.whatsapp.com') ||
+        host.endsWith('.whatsapp.com') ||
+        host.endsWith('.whatsapp.net'))
+    );
+  } catch {
+    return false;
+  }
+}
 
 export class SecurityManager {
   /**
@@ -15,14 +43,14 @@ export class SecurityManager {
   }
 
   /**
-   * Restricts hardware capabilities strictly to microphone, camera, and notifications
-   * for the trusted WhatsApp origin only.
+   * Restricts hardware capabilities strictly to microphone, camera, storage, and notifications
+   * for trusted WhatsApp origins only.
    */
-  private static enforcePermissionHandlers(ses: Session): void {
-    ses.setPermissionRequestHandler((_webContents, permission, callback, details) => {
+  public static enforcePermissionHandlers(ses: Session): void {
+    ses.setPermissionRequestHandler((webContents, permission, callback, details) => {
       try {
-        const origin = new URL(details.requestingUrl).origin;
-        if (origin !== TRUSTED_ORIGIN) {
+        const urlStr = details.requestingUrl || webContents.getURL() || '';
+        if (!isWhatsAppOrigin(urlStr)) {
           return callback(false);
         }
 
@@ -43,7 +71,7 @@ export class SecurityManager {
     });
 
     ses.setPermissionCheckHandler((_webContents, permission, requestingOrigin) => {
-      return requestingOrigin === TRUSTED_ORIGIN && ALLOWED_PERMISSIONS.has(permission);
+      return isWhatsAppOrigin(requestingOrigin) && ALLOWED_PERMISSIONS.has(permission);
     });
   }
 
@@ -51,7 +79,7 @@ export class SecurityManager {
    * Tri-layer navigation guard protecting against clickjacking, malicious redirects,
    * protocol injection, and local file access.
    */
-  private static enforceNavigationGuards(win: BrowserWindow): void {
+  public static enforceNavigationGuards(win: BrowserWindow): void {
     const { webContents } = win;
 
     // Layer 1: Popup & target="_blank" window creation
