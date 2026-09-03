@@ -32,6 +32,7 @@ A high-quality, battle-tested, secure, and feature-rich Linux desktop client bui
 - [Autostart and Background Startup](./tickets/T04-autostart-and-background-startup.md): Dual-mode autostart subsystem supporting standard XDG autostart `.desktop` entry with delay flag and `systemd --user` service unit, wired to `--hidden` launch flags and settings IPC.
 - [Adwaita Styling and MPRIS Media Controls](./tickets/T05-adwaita-styling-and-mpris-media-controls.md): Libadwaita Cantarell typography, floating scrollbars, dark palette, dynamic theme sync matching GNOME color-scheme, and media playback observer with hardware multimedia key integration.
 - [App Lock and Secret Storage](./tickets/T06-app-lock-and-secret-storage.md): Process-isolated WebContentsView lock screen preventing DOM tampering, memory-hard scrypt key derivation bound to machine-id, GNOME Keyring secret-tool integration with encrypted AES-256-GCM vault fallback, and notification privacy redaction.
+- [Packaging and Desktop Integration](./tickets/T08-packaging-and-desktop-integration.md): Native GNOME desktop launcher validation, multi-resolution hicolor system icons, runner binary, and automated install/uninstall scripts.
 
 
 ## Not yet specified

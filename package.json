@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "start": "electron ."
+    "start": "electron . --ozone-platform=wayland",
+    "install-desktop": "node scripts/install-desktop.js",
+    "uninstall-desktop": "node scripts/uninstall-desktop.js"
   },
   "devDependencies": {
     "@types/node": "^26.4.1",
