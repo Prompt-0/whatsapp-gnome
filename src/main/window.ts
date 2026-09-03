@@ -93,9 +93,24 @@ export class WindowController {
     partitionSession.setUserAgent(cleanUserAgent);
     win.webContents.setUserAgent(cleanUserAgent);
 
-    // Diagnostics: capture console messages from WhatsApp Web
-    win.webContents.on('console-message', (_event, level, message, line, sourceId) => {
+    // Diagnostics: capture console messages from WhatsApp Web using modern Event signature
+    win.webContents.on('console-message', (event: any, ...args: any[]) => {
+      const level = typeof event?.level === 'number' ? event.level : args[0];
+      const message = typeof event?.message === 'string' ? event.message : args[1];
+      const line = typeof event?.line === 'number' ? event.line : args[2];
+      const sourceId = typeof event?.sourceId === 'string' ? event.sourceId : args[3];
+
+      // Filter out benign noise (telemetry CORS, unrecognized browser permissions-policy)
       if (level >= 2) {
+        if (
+          typeof message === 'string' &&
+          (message.includes('deidentified_telemetry') ||
+            message.includes('Permissions-Policy header') ||
+            message.includes('Permissions policy violation: unload') ||
+            message.includes('QPL event identified by token'))
+        ) {
+          return;
+        }
         console.warn(`[WhatsApp Console] [level ${level}] ${message} (${sourceId}:${line})`);
       }
     });
