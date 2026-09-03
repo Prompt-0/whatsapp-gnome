@@ -30,6 +30,7 @@ A high-quality, battle-tested, secure, and feature-rich Linux desktop client bui
 - [Rich GNOME Notifications and Unread Badge](./tickets/T03-rich-gnome-notifications-and-unread-badge.md): Dual-tier preload/main-world notification proxying, avatar blob transcoding and disk caching, in-place notification updates via FreeDesktop D-Bus, deep chat switching on click, and triple-layer unread badge synchronization across Dash-to-Dock, AppIndicator, and window title.
 - [Core Application Scaffold and Sandbox Implementation](./tickets/T07-core-application-scaffold-and-sandbox-implementation.md): Scaffolded Electron 44 + TypeScript application with pure Wayland Ozone flags, SecurityManager, WindowController, TrayManager, and verified preload bridge.
 - [Autostart and Background Startup](./tickets/T04-autostart-and-background-startup.md): Dual-mode autostart subsystem supporting standard XDG autostart `.desktop` entry with delay flag and `systemd --user` service unit, wired to `--hidden` launch flags and settings IPC.
+- [Adwaita Styling and MPRIS Media Controls](./tickets/T05-adwaita-styling-and-mpris-media-controls.md): Libadwaita Cantarell typography, floating scrollbars, dark palette, dynamic theme sync matching GNOME color-scheme, and media playback observer with hardware multimedia key integration.
 
 
 ## Not yet specified

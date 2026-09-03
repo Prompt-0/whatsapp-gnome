@@ -7,6 +7,8 @@ import { TrayManager } from './tray';
 import { NotificationManager } from './notifications';
 import { SecurityManager } from './security';
 import { AutostartManager } from './autostart';
+import { AdwaitaThemeManager } from './adwaita';
+import { MediaController } from './media';
 
 // ============================================================================
 // 1. Pure Wayland & GNOME Platform Configuration (Pre-Ready)
@@ -51,6 +53,8 @@ async function bootstrap(): Promise<void> {
   const autostartManager = new AutostartManager(settingsManager);
   const windowController = new WindowController(appPaths);
   const trayManager = new TrayManager(windowController, assetsDir);
+  const themeManager = new AdwaitaThemeManager(assetsDir);
+  const mediaController = new MediaController(() => windowController.getMainWindow());
 
   // Handle second instance launch
   app.on('second-instance', () => {
@@ -68,6 +72,9 @@ async function bootstrap(): Promise<void> {
   // Apply Security Boundaries
   const partitionSession = session.fromPartition('persist:whatsapp-session');
   SecurityManager.apply(mainWindow, partitionSession);
+
+  // Attach Libadwaita Theme Engine
+  themeManager.attach(mainWindow);
 
   // Initialize AppIndicator Tray
   trayManager.initialize();

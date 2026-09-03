@@ -1,0 +1,75 @@
+/**
+ * Libadwaita & GNOME 50 Native Styling Injection for WhatsApp Web
+ */
+
+:root {
+  --adw-font: "Cantarell", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --adw-accent: #3584e4;
+  --adw-accent-green: #2ec27e;
+  --adw-radius-small: 6px;
+  --adw-radius-medium: 10px;
+  --adw-radius-large: 14px;
+}
+
+/* 1. Typography & Global Body */
+body, html {
+  font-family: var(--adw-font) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 2. GNOME-style Smooth Floating Scrollbars */
+::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(140, 140, 140, 0.35) !important;
+  border-radius: 3px !important;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 140, 140, 0.65) !important;
+}
+
+/* 3. Dark Theme - Libadwaita Dark Palette */
+body.dark, html.dark {
+  --app-background: #1e1e1e !important;
+  --panel-background: #242424 !important;
+  --panel-header-background: #282828 !important;
+  --conversation-panel-background: #1e1e1e !important;
+  --incoming-bubble: #2c2c2c !important;
+  --outgoing-bubble: #005c4b !important;
+  --border-subtle: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark #app {
+  background-color: #1e1e1e !important;
+}
+
+/* 4. Rounded Message Bubbles (Libadwaita Card Feel) */
+.message-in, .message-out, div[data-id] {
+  border-radius: var(--adw-radius-large) !important;
+}
+
+/* 5. Input Fields & Search Bars */
+input, textarea, div[contenteditable="true"] {
+  border-radius: var(--adw-radius-medium) !important;
+  font-family: var(--adw-font) !important;
+}
+
+/* 6. Clean borders between sidebar and chat pane */
+header, div[role="region"] {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 7. Subtle hover states on chat list items */
+div[role="listitem"]:hover {
+  transition: background-color 0.15s ease-in-out;
+}

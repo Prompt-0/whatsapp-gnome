@@ -263,3 +263,66 @@ window.addEventListener('DOMContentLoaded', () => {
   // Fallback poller
   setInterval(reportUnreadCount, 3000);
 });
+
+// ============================================================================
+// 4. MPRIS2 Media Playback Observer & Controller
+// ============================================================================
+document.addEventListener(
+  'play',
+  (event) => {
+    const target = event.target as HTMLMediaElement;
+    if (target && (target.tagName === 'AUDIO' || target.tagName === 'VIDEO')) {
+      ipcRenderer.send('media:playback-state', { status: 'Playing' });
+    }
+  },
+  true
+);
+
+document.addEventListener(
+  'pause',
+  (event) => {
+    const target = event.target as HTMLMediaElement;
+    if (target && (target.tagName === 'AUDIO' || target.tagName === 'VIDEO')) {
+      ipcRenderer.send('media:playback-state', { status: 'Paused' });
+    }
+  },
+  true
+);
+
+document.addEventListener(
+  'ended',
+  (event) => {
+    const target = event.target as HTMLMediaElement;
+    if (target && (target.tagName === 'AUDIO' || target.tagName === 'VIDEO')) {
+      ipcRenderer.send('media:playback-state', { status: 'Stopped' });
+    }
+  },
+  true
+);
+
+ipcRenderer.on('media:toggle-play-pause', () => {
+  const mediaElements = Array.from(document.querySelectorAll<HTMLMediaElement>('audio, video'));
+  const activeMedia = mediaElements.find((m) => !m.paused);
+  if (activeMedia) {
+    activeMedia.pause();
+  } else if (mediaElements.length > 0) {
+    activeMedia || mediaElements[mediaElements.length - 1].play().catch(() => {});
+  } else {
+    // Fallback: search for WhatsApp voice message play button
+    const playBtn = document.querySelector(
+      'button[aria-label*="Play"], span[data-icon="play-sound"]'
+    ) as HTMLElement | null;
+    if (playBtn) {
+      playBtn.click();
+    }
+  }
+});
+
+ipcRenderer.on('media:stop', () => {
+  const mediaElements = Array.from(document.querySelectorAll<HTMLMediaElement>('audio, video'));
+  for (const m of mediaElements) {
+    m.pause();
+    m.currentTime = 0;
+  }
+});
+
