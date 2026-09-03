@@ -31,6 +31,7 @@ A high-quality, battle-tested, secure, and feature-rich Linux desktop client bui
 - [Core Application Scaffold and Sandbox Implementation](./tickets/T07-core-application-scaffold-and-sandbox-implementation.md): Scaffolded Electron 44 + TypeScript application with pure Wayland Ozone flags, SecurityManager, WindowController, TrayManager, and verified preload bridge.
 - [Autostart and Background Startup](./tickets/T04-autostart-and-background-startup.md): Dual-mode autostart subsystem supporting standard XDG autostart `.desktop` entry with delay flag and `systemd --user` service unit, wired to `--hidden` launch flags and settings IPC.
 - [Adwaita Styling and MPRIS Media Controls](./tickets/T05-adwaita-styling-and-mpris-media-controls.md): Libadwaita Cantarell typography, floating scrollbars, dark palette, dynamic theme sync matching GNOME color-scheme, and media playback observer with hardware multimedia key integration.
+- [App Lock and Secret Storage](./tickets/T06-app-lock-and-secret-storage.md): Process-isolated WebContentsView lock screen preventing DOM tampering, memory-hard scrypt key derivation bound to machine-id, GNOME Keyring secret-tool integration with encrypted AES-256-GCM vault fallback, and notification privacy redaction.
 
 
 ## Not yet specified
@@ -40,7 +41,6 @@ A high-quality, battle-tested, secure, and feature-rich Linux desktop client bui
 - **Audio/Video Call WebRTC Codec & PipeWire Device Selection**: Ensuring PipeWire microphone/camera streaming and screen sharing work flawlessly on GNOME Wayland sessions during WhatsApp calls.
 - **Offline Network Reconnection Resilience**: Handling system sleep/suspend/resume events and network topology changes without stalling or requiring manual app reloads.
 - **Multi-Account Profile Switching**: Architecting isolated session partitions if concurrent personal and work WhatsApp accounts are needed.
-- **Packaging & Distribution Pipeline**: Creating Flatpak / AppImage / native RPM bundle for seamless system-level installation.
 
 ## Out of scope
 
