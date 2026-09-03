@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import * as fs from 'node:fs';
 import { AppSettings } from '../common/types';
-import { XdgDirectories } from './xdg';
+import { AppPaths } from './paths';
 import { SecurityManager } from './security';
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -15,7 +15,7 @@ const DEFAULT_SETTINGS: AppSettings = {
 export class SettingsManager {
   private settings: AppSettings;
 
-  constructor(private dirs: XdgDirectories) {
+  constructor(private paths: AppPaths) {
     this.settings = this.loadSettings();
     this.registerIpcHandlers();
   }
@@ -48,11 +48,11 @@ export class SettingsManager {
 
   private loadSettings(): AppSettings {
     try {
-      if (!fs.existsSync(this.dirs.configFile)) {
+      if (!fs.existsSync(this.paths.configFile)) {
         this.saveSettings(DEFAULT_SETTINGS);
         return { ...DEFAULT_SETTINGS };
       }
-      const data = fs.readFileSync(this.dirs.configFile, 'utf8');
+      const data = fs.readFileSync(this.paths.configFile, 'utf8');
       return { ...DEFAULT_SETTINGS, ...JSON.parse(data) };
     } catch (err) {
       console.error('[SettingsManager] Failed to load settings, using defaults:', err);
@@ -62,7 +62,7 @@ export class SettingsManager {
 
   private saveSettings(data = this.settings): void {
     try {
-      fs.writeFileSync(this.dirs.configFile, JSON.stringify(data, null, 2), 'utf8');
+      fs.writeFileSync(this.paths.configFile, JSON.stringify(data, null, 2), 'utf8');
     } catch (err) {
       console.error('[SettingsManager] Failed to save settings:', err);
     }

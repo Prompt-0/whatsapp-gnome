@@ -1,7 +1,7 @@
 import { app, BrowserWindow, screen, session } from 'electron';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { XdgDirectories } from './xdg';
+import { AppPaths } from './paths';
 
 interface WindowState {
   x?: number;
@@ -17,7 +17,7 @@ export class WindowController {
   private state: WindowState;
   private stateSaveTimeout: NodeJS.Timeout | null = null;
 
-  constructor(private dirs: XdgDirectories) {
+  constructor(private paths: AppPaths) {
     this.state = this.loadWindowState();
 
     app.on('before-quit', () => {
@@ -159,7 +159,7 @@ export class WindowController {
     if (this.stateSaveTimeout) clearTimeout(this.stateSaveTimeout);
     this.stateSaveTimeout = setTimeout(() => {
       try {
-        fs.writeFileSync(this.dirs.windowStateFile, JSON.stringify(this.state, null, 2), 'utf8');
+        fs.writeFileSync(this.paths.windowStateFile, JSON.stringify(this.state, null, 2), 'utf8');
       } catch (err) {
         console.error('[WindowController] Failed to save window state:', err);
       }
@@ -169,8 +169,8 @@ export class WindowController {
   private loadWindowState(): WindowState {
     const defaultState: WindowState = { width: 1100, height: 750, isMaximized: false };
     try {
-      if (!fs.existsSync(this.dirs.windowStateFile)) return defaultState;
-      const parsed: WindowState = JSON.parse(fs.readFileSync(this.dirs.windowStateFile, 'utf8'));
+      if (!fs.existsSync(this.paths.windowStateFile)) return defaultState;
+      const parsed: WindowState = JSON.parse(fs.readFileSync(this.paths.windowStateFile, 'utf8'));
 
       if (parsed.x !== undefined && parsed.y !== undefined) {
         const displays = screen.getAllDisplays();

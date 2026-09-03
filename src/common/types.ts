@@ -24,6 +24,8 @@ export interface DesktopBridgeApi {
   updateBadgeCount: (count: number, trayDataUrl?: string) => void;
   getSettings: () => Promise<AppSettings>;
   updateSettings: (settings: Partial<AppSettings>) => Promise<AppSettings>;
+  getAutostartStatus: () => Promise<{ enabled: boolean; desktopFileExists: boolean; systemdFileExists: boolean }>;
+  setAutostart: (options: { enabled: boolean; startHidden?: boolean; useSystemd?: boolean }) => Promise<{ enabled: boolean }>;
 }
 
 declare global {

@@ -31,6 +31,12 @@ contextBridge.exposeInMainWorld('__gnomeDesktopBridge', {
   updateSettings: (settings: Partial<AppSettings>): Promise<AppSettings> => {
     return ipcRenderer.invoke('app:update-settings', settings);
   },
+  getAutostartStatus: () => {
+    return ipcRenderer.invoke('autostart:get-status');
+  },
+  setAutostart: (options: { enabled: boolean; startHidden?: boolean; useSystemd?: boolean }) => {
+    return ipcRenderer.invoke('autostart:set-status', options);
+  },
 });
 
 // ============================================================================

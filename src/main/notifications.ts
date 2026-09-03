@@ -5,7 +5,7 @@ import * as path from 'node:path';
 import { InterceptedNotification, SoundMode } from '../common/types';
 import { TrayManager } from './tray';
 import { WindowController } from './window';
-import { XdgDirectories } from './xdg';
+import { AppPaths } from './paths';
 import { SecurityManager } from './security';
 
 export class NotificationManager {
@@ -16,7 +16,7 @@ export class NotificationManager {
   constructor(
     private windowController: WindowController,
     private trayManager: TrayManager,
-    private dirs: XdgDirectories,
+    private paths: AppPaths,
     private defaultIconPath: string
   ) {
     this.registerIpcHandlers();
@@ -57,7 +57,7 @@ export class NotificationManager {
 
     try {
       const hash = crypto.createHash('sha256').update(iconData).digest('hex');
-      const targetPath = path.join(this.dirs.avatarCacheDir, `${hash}.png`);
+      const targetPath = path.join(this.paths.avatarCacheDir, `${hash}.png`);
 
       try {
         await fs.access(targetPath);

@@ -1,11 +1,12 @@
 import { app, session } from 'electron';
 import * as path from 'node:path';
-import { initializeXdgEnvironment } from './xdg';
+import { initializeAppPaths } from './paths';
 import { SettingsManager } from './settings';
 import { WindowController } from './window';
 import { TrayManager } from './tray';
 import { NotificationManager } from './notifications';
 import { SecurityManager } from './security';
+import { AutostartManager } from './autostart';
 
 // ============================================================================
 // 1. Pure Wayland & GNOME Platform Configuration (Pre-Ready)
@@ -42,12 +43,13 @@ async function bootstrap(): Promise<void> {
   const assetsDir = path.join(__dirname, '../../assets');
   const defaultIconPath = path.join(assetsDir, 'whatsapp-icon.png');
 
-  // 1. Initialize XDG Base Directory environment
-  const xdgDirs = initializeXdgEnvironment();
+  // 1. Initialize Standard Application Storage Paths
+  const appPaths = initializeAppPaths();
 
   // 2. Initialize Core Subsystems
-  const settingsManager = new SettingsManager(xdgDirs);
-  const windowController = new WindowController(xdgDirs);
+  const settingsManager = new SettingsManager(appPaths);
+  const autostartManager = new AutostartManager(settingsManager);
+  const windowController = new WindowController(appPaths);
   const trayManager = new TrayManager(windowController, assetsDir);
 
   // Handle second instance launch
@@ -74,7 +76,7 @@ async function bootstrap(): Promise<void> {
   const notificationManager = new NotificationManager(
     windowController,
     trayManager,
-    xdgDirs,
+    appPaths,
     defaultIconPath
   );
   notificationManager.setSoundMode(settings.soundMode);
