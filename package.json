@@ -1,0 +1,16 @@
+{
+  "name": "whatsapp-gnome",
+  "version": "1.0.0",
+  "description": "WhatsApp Web Native GNOME 50 Desktop Client for Wayland",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "electron": "^44.1.1",
+    "typescript": "^7.0.2"
+  }
+}
