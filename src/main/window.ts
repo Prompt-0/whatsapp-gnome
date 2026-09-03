@@ -89,13 +89,36 @@ export class WindowController {
       }
     });
 
-    // Custom user agent: modern Chrome on Linux for 100% WhatsApp Web feature parity
-    const defaultUserAgent = win.webContents.getUserAgent();
-    const chromeUserAgent = defaultUserAgent.replace(/whatsapp-gnome\/[0-9.-]+ /i, '');
-    win.webContents.setUserAgent(chromeUserAgent);
+    // Custom user agent: clean modern Chrome on Linux (strip Electron and wrapper tokens)
+    const chromeVersion = process.versions.chrome || '130.0.0.0';
+    const cleanUserAgent = `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVersion} Safari/537.36`;
+    partitionSession.setUserAgent(cleanUserAgent);
+    win.webContents.setUserAgent(cleanUserAgent);
 
-    // Load WhatsApp Web
-    win.loadURL('https://web.whatsapp.com');
+    // Diagnostics: capture console messages from WhatsApp Web
+    win.webContents.on('console-message', (_event, level, message, line, sourceId) => {
+      if (level >= 2) {
+        console.warn(`[WhatsApp Console] [level ${level}] ${message} (${sourceId}:${line})`);
+      }
+    });
+
+    win.webContents.on('did-fail-load', (_event, errorCode, errorDescription, validatedURL) => {
+      console.error(`[WhatsApp FailLoad] ${errorCode}: ${errorDescription} on ${validatedURL}`);
+    });
+
+    // DevTools shortcut (F12 or Ctrl+Shift+I)
+    win.webContents.on('before-input-event', (event, input) => {
+      if (
+        input.type === 'keyDown' &&
+        (input.key === 'F12' || (input.control && input.shift && input.key.toLowerCase() === 'i'))
+      ) {
+        win.webContents.toggleDevTools();
+        event.preventDefault();
+      }
+    });
+
+    // Load WhatsApp Web with clean User-Agent
+    win.loadURL('https://web.whatsapp.com', { userAgent: cleanUserAgent });
 
     win.once('ready-to-show', () => {
       if (!startHidden) {
